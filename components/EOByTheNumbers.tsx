@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 
-const EOByTheNumbers = () => {
+const ECellByTheNumbers = () => {
   const [counts, setCounts] = useState({
     members: 0,
     chapters: 0,
@@ -12,10 +12,10 @@ const EOByTheNumbers = () => {
   });
 
   const finalCounts = {
-    members: 19840,
-    chapters: 220,
-    countries: 61,
-    sales: 4
+    members: 639,
+    chapters: 2,
+    countries: 7,
+    sales: 5
   };
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const EOByTheNumbers = () => {
         </div>
       ),
       value: counts.members.toLocaleString(),
-      label: "Members Worldwide",
+      label: "Active Members",
       color: "text-pink-600"
     },
     {
@@ -75,7 +75,7 @@ const EOByTheNumbers = () => {
         </div>
       ),
       value: counts.chapters.toString(),
-      label: "Chapters",
+      label: "Chapter",
       color: "text-yellow-600"
     },
     {
@@ -91,7 +91,7 @@ const EOByTheNumbers = () => {
         </div>
       ),
       value: counts.countries.toString(),
-      label: "Countries with Chapters",
+      label: "Connected E-Cells",
       color: "text-orange-600"
     },
     {
@@ -105,8 +105,8 @@ const EOByTheNumbers = () => {
           </div>
         </div>
       ),
-      value: `US $${counts.sales}M`,
-      label: "Median Member Sales",
+      value: `₹${counts.sales}Lakhs`,
+      label: "Funds Raised",
       color: "text-teal-600"
     }
   ];
@@ -117,7 +117,7 @@ const EOByTheNumbers = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            EO by the Numbers
+            E-Cell REC by the Numbers
           </h2>
         </div>
 
@@ -145,4 +145,4 @@ const EOByTheNumbers = () => {
   );
 };
 
-export default EOByTheNumbers;
+export default ECellByTheNumbers;

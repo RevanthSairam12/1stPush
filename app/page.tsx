@@ -6,9 +6,11 @@ import AboutSection from "@/components/AboutSection";
 import VideoSection from "@/components/VideoSection";
 import ConnectLearnGrowSection from "@/components/ConnectLearnGrowSection";
 import TestimonialSection from "@/components/TestimonialSection";
-import EOExperienceSection from "@/components/EOExperienceSection";
-import MembersLoveEOSection from "@/components/MembersLoveEOSection";
-import EOByTheNumbers from "@/components/EOByTheNumbers";
+
+import MembersLoveECellSection from "@/components/MembersLoveEOSection";
+import ECellByTheNumbers from "@/components/EOByTheNumbers";
+import LatestInsightsSection from "@/components/LatestInsightsSection";
+import JoinECellCommunitySection from "@/components/JoinGlobalCommunitySection";
 import Footer from "@/components/Footer";
 
 export default function NewDesignHome() {
@@ -19,10 +21,11 @@ export default function NewDesignHome() {
       <AboutSection />
       <VideoSection />
       <ConnectLearnGrowSection />
-      <EOByTheNumbers />
+      <ECellByTheNumbers />
       <TestimonialSection />
-      <EOExperienceSection />
-      <MembersLoveEOSection />
+      <MembersLoveECellSection />
+      <LatestInsightsSection />
+      <JoinECellCommunitySection />
       <Footer />
     </div>
   );

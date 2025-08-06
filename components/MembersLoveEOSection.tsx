@@ -3,21 +3,21 @@
 import Image from "next/image";
 import { useState } from "react";
 
-const MembersLoveEOSection = () => {
+const MembersLoveECellSection = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   const testimonials = [
     {
-      text: "Being a member of this global EO community is such a special gift! We come from every industry, every culture, every age group, and every corner of the world, and yet we're all entrepreneurs. It's this mix of diverse perspectives and shared passions that makes EO membership so enriching and magical.",
-      name: "Abeer Qumsieh",
-      location: "EO Jordan",
+      text: "Being a member of E-Cell REC is such a special gift! We come from different departments, backgrounds, and experiences, and yet we're all aspiring entrepreneurs. It's this mix of diverse perspectives and shared passions that makes E-Cell membership so enriching and magical.",
+      name: "Sriram Vishal Epu",
+      location: "E-Cell REC President",
       image: "/group/group2.jpg",
       circleColor: "border-pink-500"
     },
     {
-      text: "It is said, 'it's lonely at the top' and EO provided a platform where vulnerability met experience. Through forums and collective learning, I found a structured space to address challenges, gaining insights crucial for personal and business growth.",
-      name: "Vipul Jain",
-      location: "EO Gurgaon",
+      text: "E-Cell REC provided a platform where vulnerability met experience. Through workshops and collective learning, I found a structured space to address challenges, gaining insights crucial for personal and entrepreneurial growth.",
+      name: "Aamuktha Malyadha",
+      location: "E-Cell REC Vice President",
       image: "/group/group4.jpg",
       circleColor: "border-teal-500"
     }
@@ -29,7 +29,7 @@ const MembersLoveEOSection = () => {
         
         {/* Main Heading */}
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-16">
-          Members Love EO
+          Members Love E-Cell REC
         </h2>
 
         {/* Testimonial Cards Container */}
@@ -169,4 +169,4 @@ const MembersLoveEOSection = () => {
   );
 };
 
-export default MembersLoveEOSection;
+export default MembersLoveECellSection;

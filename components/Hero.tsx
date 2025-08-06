@@ -11,7 +11,7 @@ const Hero = () => {
       <div className="absolute inset-0">
         <Image
           src="/group/group1.jpg"
-          alt="Entrepreneurs Organization Group Photo"
+          alt="E-Cell REC Group Photo"
           fill
           className="object-cover object-center"
           priority
@@ -25,27 +25,17 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto">
           {/* Main Heading */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 leading-tight tracking-tight">
-            Entrepreneurs Organization
+            E-Cell REC
           </h1>
 
           {/* Subheading */}
           <p className="text-lg md:text-xl text-white/95 leading-relaxed font-light">
-            Find your place among the world's leaders
+            Empowering the next generation of entrepreneurs
           </p>
         </div>
       </div>
 
-      {/* Language Selector Button - Bottom Right */}
-      <div className="absolute bottom-6 right-6 z-20">
-        <Button
-          variant="outline"
-          size="sm"
-          className="bg-white/95 backdrop-blur-sm border-white/30 text-gray-700 hover:bg-white transition-all duration-300 rounded-md px-3 py-2 text-sm font-medium"
-        >
-          <Globe className="w-4 h-4 mr-2" />
-          English
-        </Button>
-      </div>
+
     </section>
   );
 };

@@ -70,12 +70,12 @@ const TestimonialSection = () => {
               {/* Text content - exact match */}
               <div className="flex-1">
                 <p className="text-white text-lg leading-relaxed mb-6 font-light">
-                  I've been there—the late nights, the doubts, the grind. But being part of EO has been a game-changer. It's not just about networking. It's about real growth, learning, and thriving alongside like-minded entrepreneurs. Through workshops, inspiring events, and a global network of peers, EO helps us push boundaries, innovate, and elevate our businesses.
+                  I've been there—the late nights, the doubts, the grind. But being part of E-Cell REC has been a game-changer. It's not just about networking. It's about real growth, learning, and thriving alongside like-minded entrepreneurs. Through workshops, inspiring events, and a vibrant community of peers, E-Cell REC helps us push boundaries, innovate, and elevate our ventures.
                 </p>
 
                 <div className="text-white">
-                  <span className="font-bold">Craig Wasichak</span>
-                  <span className="font-light">, EO Fort Worth</span>
+                  <span className="font-bold">Sriram Vishal Epu</span>
+                  <span className="font-light">, E-Cell REC President</span>
                 </div>
               </div>
 
@@ -92,7 +92,7 @@ const TestimonialSection = () => {
                   <div className="absolute inset-4 w-24 h-24 rounded-full overflow-hidden bg-blue-400">
                     <Image
                       src="/group/group3.jpg"
-                      alt="Craig Wasichak"
+                      alt="Sriram Vishal Epu"
                       fill
                       className="object-cover"
                     />

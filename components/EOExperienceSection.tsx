@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-const EOExperienceSection = () => {
+const ECellExperienceSection = () => {
   return (
     <section className="relative py-16 px-6 overflow-hidden bg-gradient-to-br from-purple-100 via-purple-50 to-white">
       {/* Background decorative circles */}
@@ -16,7 +16,7 @@ const EOExperienceSection = () => {
         
         {/* Main Heading */}
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-16">
-          The EO Experience
+          The E-Cell Experience
         </h2>
 
         {/* Experience Items */}
@@ -52,7 +52,7 @@ const EOExperienceSection = () => {
             </div>
             <div className="flex-1">
               <h3 className="text-xl font-semibold text-blue-600 underline mb-2">
-                MyEO:
+                MyE-Cell:
               </h3>
               <p className="text-gray-700 text-base">
                 Connect based on shared interests or industries
@@ -124,4 +124,4 @@ const EOExperienceSection = () => {
   );
 };
 
-export default EOExperienceSection;
+export default ECellExperienceSection;

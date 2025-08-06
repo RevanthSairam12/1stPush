@@ -16,10 +16,10 @@ const AboutSection = () => {
               {/* Main Text Block */}
               <div className="space-y-6">
                 <p className="text-base md:text-lg leading-relaxed font-normal">
-                  Welcome to EO, where successful entrepreneurs connect, learn and grow together. Join a
-                  global community by entrepreneurs, for entrepreneurs, designed to help business owners like
-                  you, who are taking their leadership and companies to the next level. Discover the power of
-                  shared experiences, world-class resources, and a network that spans the globe.
+                  Welcome to E-Cell REC, where aspiring entrepreneurs connect, learn and grow together. Join our
+                  vibrant community by students, for students, designed to help future business leaders like
+                  you, who are taking their ideas and ventures to the next level. Discover the power of
+                  shared experiences, world-class resources, and a network that spans the campus and beyond.
                 </p>
               </div>
 
@@ -28,7 +28,7 @@ const AboutSection = () => {
                 <div className="relative w-full max-w-sm h-48 rounded-2xl overflow-hidden shadow-lg">
                   <Image
                     src="/group/group2.jpg"
-                    alt="EO Members celebrating outdoors"
+                    alt="E-Cell REC Members celebrating outdoors"
                     fill
                     className="object-cover"
                   />
@@ -45,7 +45,7 @@ const AboutSection = () => {
                 <div className="relative w-full h-64 rounded-2xl overflow-hidden shadow-lg">
                   <Image
                     src="/group/group3.jpg"
-                    alt="EO Members networking and connecting"
+                    alt="E-Cell REC Members networking and connecting"
                     fill
                     className="object-cover"
                   />
@@ -66,17 +66,7 @@ const AboutSection = () => {
             </div>
           </div>
 
-          {/* Language Selector - Bottom Right */}
-          <div className="absolute bottom-4 right-4">
-            <div className="bg-white rounded-lg px-3 py-2 flex items-center space-x-2 text-sm font-medium text-gray-800 shadow-sm">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="2" y1="12" x2="22" y2="12"/>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-              </svg>
-              <span>English</span>
-            </div>
-          </div>
+
         </div>
       </div>
     </section>

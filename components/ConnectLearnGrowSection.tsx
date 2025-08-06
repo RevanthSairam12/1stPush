@@ -22,7 +22,7 @@ const ConnectLearnGrowSection = () => {
               Connect
             </h3>
             <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-              Build relationships with nearly 20,000 peers across more than 220 chapters in 61 countries. Have the conversations you can't have anywhere else about what's really going on in your life and your business and make the connections that unlock real first growth.
+              Build relationships with fellow entrepreneurs across our vibrant community. Have the conversations you can't have anywhere else about what's really going on in your life and your ventures and make the connections that unlock real growth.
             </p>
             <Button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium text-base flex items-center space-x-2">
               <span>Learn More</span>
@@ -56,7 +56,7 @@ const ConnectLearnGrowSection = () => {
             <div className="relative w-full h-64 rounded-2xl overflow-hidden shadow-lg">
               <Image
                 src="/group/group6.jpg"
-                alt="EO Members learning together"
+                alt="E-Cell REC Members learning together"
                 fill
                 className="object-cover"
               />

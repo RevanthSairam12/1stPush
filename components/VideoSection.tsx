@@ -10,13 +10,13 @@ const VideoSection = () => {
         
         {/* Heading */}
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-8">
-          In EO, we belong, so we can become even more.
+          In E-Cell, we belong, so we can become even more.
         </h2>
 
         {/* Explore Button */}
         <div className="mb-12">
           <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium text-base flex items-center space-x-2 mx-auto">
-            <span>Explore EO Membership</span>
+            <span>Explore E-Cell</span>
             <ArrowRight className="w-4 h-4" />
           </Button>
         </div>

@@ -17,79 +17,88 @@ const Header = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="w-full bg-white border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0 flex items-center space-x-2">
-              <div className="w-8 h-8 bg-hero-gradient rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">E</span>
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-pink-400 via-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">EC</span>
               </div>
-              <span className="text-xl font-bold text-foreground">E-Cell</span>
+              <span className="text-base font-medium text-gray-900">E-Cell REC</span>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="text-foreground hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200"
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
+          {/* Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors"
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
-            <Link href="/registration">
-              <Button className="bg-hero-gradient hover:opacity-90 transition-all duration-300 animate-pulse-glow">
-                Start Startup
+          {/* Right side */}
+          <div className="flex items-center space-x-4">
+            <Link href="/registration" className="hidden sm:inline-block">
+              <Button variant="outline" className="text-sm">
+                Login
               </Button>
             </Link>
-          </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-foreground hover:text-primary p-2"
-            >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
+            <Link href="/join-ecell" className="hidden sm:inline-block">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-sm">
+                Apply Today
+              </Button>
+            </Link>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-background border-t border-border">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-foreground hover:text-primary block px-3 py-2 text-base font-medium"
+                  className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
-              <div className="px-3 py-2">
+              <div className="px-3 py-2 space-y-2">
                 <Link href="/registration">
-                  <Button className="w-full bg-hero-gradient hover:opacity-90">
-                    Start Startup
+                  <Button variant="outline" className="w-full">
+                    Login
+                  </Button>
+                </Link>
+                <Link href="/join-ecell">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                    Apply Today
                   </Button>
                 </Link>
               </div>
             </div>
           </div>
         )}
-      </nav>
+      </div>
     </header>
   );
 };
