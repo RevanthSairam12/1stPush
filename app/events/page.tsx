@@ -18,7 +18,7 @@ export default function EventsPage() {
       <Header />
 
       {/* Hero Section - EO Events */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden pt-16">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image

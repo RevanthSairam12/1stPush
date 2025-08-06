@@ -207,6 +207,8 @@ html {
   scroll-behavior: smooth;
 }
 
+
+
 /* Custom scrollbar for specific containers */
 
 .custom-scrollbar::-webkit-scrollbar {

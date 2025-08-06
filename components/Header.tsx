@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const navigation = [
     { name: "Team", href: "/team" },
@@ -16,17 +18,44 @@ const Header = () => {
     { name: "Join E-Cell", href: "/join-ecell" },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
+
+      setIsScrolled(scrollTop > 10);
+      setScrollProgress(Math.min(scrollPercent, 100));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header className="w-full bg-white border-b border-gray-200">
+    <header
+      className="fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300"
+      style={{
+        backgroundColor: isScrolled ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 1)',
+        backdropFilter: isScrolled ? 'blur(12px)' : 'none',
+        WebkitBackdropFilter: isScrolled ? 'blur(12px)' : 'none',
+        borderBottom: isScrolled ? '1px solid rgba(229, 231, 235, 0.5)' : '1px solid rgb(229, 231, 235)',
+        boxShadow: isScrolled ? '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)' : 'none'
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-pink-400 via-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+            <Link href="/" className="flex items-center space-x-2 transition-transform duration-200 hover:scale-105">
+              <div className={`w-8 h-8 bg-gradient-to-r from-pink-400 via-purple-500 to-blue-500 rounded-full flex items-center justify-center transition-all duration-300 ${
+                isScrolled ? 'shadow-md' : ''
+              }`}>
                 <span className="text-white font-bold text-sm">EC</span>
               </div>
-              <span className="text-base font-medium text-gray-900">E-Cell REC</span>
+              <span className={`text-base font-medium transition-colors duration-300 ${
+                isScrolled ? 'text-gray-900' : 'text-gray-900'
+              }`}>E-Cell REC</span>
             </Link>
           </div>
 
@@ -36,9 +65,10 @@ const Header = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors"
+                className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-all duration-200 hover:scale-105 relative group"
               >
                 {item.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-blue-500 transition-all duration-300 group-hover:w-full"></span>
               </Link>
             ))}
           </div>
@@ -46,13 +76,13 @@ const Header = () => {
           {/* Right side */}
           <div className="flex items-center space-x-4">
             <Link href="/registration" className="hidden sm:inline-block">
-              <Button variant="outline" className="text-sm">
+              <Button variant="outline" className="text-sm transition-all duration-200 hover:scale-105 hover:shadow-md">
                 Login
               </Button>
             </Link>
 
             <Link href="/join-ecell" className="hidden sm:inline-block">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-sm">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-sm transition-all duration-200 hover:scale-105 hover:shadow-lg">
                 Apply Today
               </Button>
             </Link>
@@ -72,7 +102,15 @@ const Header = () => {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+            <div
+              className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t transition-all duration-300"
+              style={{
+                backgroundColor: isScrolled ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 1)',
+                backdropFilter: isScrolled ? 'blur(12px)' : 'none',
+                WebkitBackdropFilter: isScrolled ? 'blur(12px)' : 'none',
+                borderTopColor: isScrolled ? 'rgba(229, 231, 235, 0.5)' : 'rgb(229, 231, 235)'
+              }}
+            >
               {navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -99,6 +137,16 @@ const Header = () => {
           </div>
         )}
       </div>
+
+      {/* Scroll Progress Bar */}
+      {isScrolled && (
+        <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gray-200/50">
+          <div
+            className="h-full bg-gradient-to-r from-pink-400 via-purple-500 to-blue-500 transition-all duration-300 ease-out"
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
+      )}
     </header>
   );
 };

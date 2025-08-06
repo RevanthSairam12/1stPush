@@ -1,15 +1,17 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card } from "@/components/ui/card";
 
 const ECellByTheNumbers = () => {
   const [counts, setCounts] = useState({
-    members: 0,
-    chapters: 0,
-    countries: 0,
-    sales: 0
+    members: 639,
+    chapters: 2,
+    countries: 7,
+    sales: 5
   });
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const finalCounts = {
     members: 639,
@@ -18,32 +20,76 @@ const ECellByTheNumbers = () => {
     sales: 5
   };
 
+  // Intersection Observer to detect when component is visible
   useEffect(() => {
-    const duration = 2000; // 2 seconds
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          console.log('ECellByTheNumbers component is now visible, starting animation...');
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Animation effect that runs when component becomes visible
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const duration = 3000; // 3 seconds for better visibility
     const intervals: NodeJS.Timeout[] = [];
 
-    Object.keys(finalCounts).forEach((key) => {
-      const finalValue = finalCounts[key as keyof typeof finalCounts];
-      const increment = finalValue / (duration / 50);
-      let currentValue = 0;
-
-      const interval = setInterval(() => {
-        currentValue += increment;
-        if (currentValue >= finalValue) {
-          currentValue = finalValue;
-          clearInterval(interval);
-        }
-        setCounts(prev => ({
-          ...prev,
-          [key]: Math.floor(currentValue)
-        }));
-      }, 50);
-
-      intervals.push(interval);
+    // Reset counts to 0 before starting animation
+    setCounts({
+      members: 0,
+      chapters: 0,
+      countries: 0,
+      sales: 0
     });
 
-    return () => intervals.forEach(interval => clearInterval(interval));
-  }, []);
+    // Add a small delay before starting the animation
+    const startAnimation = () => {
+      Object.keys(finalCounts).forEach((key) => {
+        const finalValue = finalCounts[key as keyof typeof finalCounts];
+        const steps = 60; // Number of animation steps
+        const increment = finalValue / steps;
+        let currentValue = 0;
+        let step = 0;
+
+        const interval = setInterval(() => {
+          step++;
+          currentValue += increment;
+
+          if (step >= steps || currentValue >= finalValue) {
+            currentValue = finalValue;
+            clearInterval(interval);
+          }
+
+          setCounts(prev => ({
+            ...prev,
+            [key]: Math.floor(currentValue)
+          }));
+        }, duration / steps);
+
+        intervals.push(interval);
+      });
+    };
+
+    // Start animation after a short delay
+    const timeout = setTimeout(startAnimation, 500);
+
+    return () => {
+      clearTimeout(timeout);
+      intervals.forEach(interval => clearInterval(interval));
+    };
+  }, [isVisible]);
 
   const stats = [
     {
@@ -112,7 +158,7 @@ const ECellByTheNumbers = () => {
   ];
 
   return (
-    <section className="py-20 bg-background">
+    <section ref={sectionRef} className="py-20 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
