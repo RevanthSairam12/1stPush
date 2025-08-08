@@ -4,9 +4,41 @@
 -- - users can have many registrations and submissions
 -- - admin_users used for fallback admin auth
 
+
+-- Create user_status enum type if not exists
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_status') THEN
+    CREATE TYPE public.user_status AS ENUM ('pending', 'active', 'inactive');
+  END IF;
+END$$;
+
+
+-- Drop trigger if it exists to avoid duplicate trigger error
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_trigger WHERE tgname = 'set_timestamp_users_app'
+      AND tgrelid = 'public.users'::regclass
+  ) THEN
+    EXECUTE 'DROP TRIGGER set_timestamp_users_app ON public.users';
+  END IF;
+END$$;
+
+
+-- Drop trigger if it exists to avoid duplicate trigger error for admin_users
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_trigger WHERE tgname = 'set_timestamp_admin_users'
+      AND tgrelid = 'public.admin_users'::regclass
+  ) THEN
+    EXECUTE 'DROP TRIGGER set_timestamp_admin_users ON public.admin_users';
+  END IF;
+END$$;
+
 BEGIN;
 
--- users table per lib/supabase.ts (email, full_name, roll_number, etc.)
 CREATE TABLE IF NOT EXISTS public.users (
   id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email            CITEXT NOT NULL UNIQUE,
@@ -23,8 +55,9 @@ CREATE TABLE IF NOT EXISTS public.users (
   deleted_at       TIMESTAMPTZ
 );
 
-CREATE INDEX IF NOT EXISTS idx_users_status ON public.users(status);
-CREATE INDEX IF NOT EXISTS idx_users_roll ON public.users(roll_number);
+
+
+
 
 CREATE TRIGGER set_timestamp_users_app
 BEFORE UPDATE ON public.users
@@ -47,4 +80,18 @@ CREATE TRIGGER set_timestamp_admin_users
 BEFORE UPDATE ON public.admin_users
 FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
+
+
+-- Ensure status column exists in users table
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS status public.user_status NOT NULL DEFAULT 'pending';
+
+-- Ensure roll_number column exists in users table
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS roll_number TEXT NOT NULL UNIQUE;
+
 COMMIT;
+
+-- Create indexes after tables are committed
+CREATE INDEX IF NOT EXISTS idx_users_status ON public.users(status);
+CREATE INDEX IF NOT EXISTS idx_users_roll ON public.users(roll_number);
+
+

@@ -3,7 +3,15 @@
 -- Relationships:
 -- - events.created_by -> users.id (optional)
 
+
 BEGIN;
+
+-- Minimal users table to satisfy foreign key constraint
+CREATE TABLE IF NOT EXISTS public.users (
+  id UUID PRIMARY KEY,
+  -- Add other columns as needed
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
 CREATE TABLE IF NOT EXISTS public.events (
   id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -1,13 +1,19 @@
--- Feature: Posts (feed/blog)
--- Tables: posts, post_likes, tags, post_tags
--- Relationships:
--- - One user has many posts
--- - Many-to-many: posts <-> tags
--- - One post has many likes
+
+-- Drop tables if they exist to avoid conflicts and ensure clean creation
+DROP TABLE IF EXISTS public.post_likes CASCADE;
+DROP TABLE IF EXISTS public.post_tags CASCADE;
+DROP TABLE IF EXISTS public.tags CASCADE;
+DROP TABLE IF EXISTS public.posts CASCADE;
+
+-- Minimal profiles table to satisfy foreign key constraint
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id UUID PRIMARY KEY,
+  -- Add other columns as needed
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
 BEGIN;
 
--- Posts
 CREATE TABLE IF NOT EXISTS public.posts (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   author_id    UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
@@ -29,7 +35,7 @@ CREATE TRIGGER set_timestamp_posts
 BEFORE UPDATE ON public.posts
 FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
--- Tags
+
 CREATE TABLE IF NOT EXISTS public.tags (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name        CITEXT NOT NULL UNIQUE,
@@ -42,7 +48,7 @@ CREATE TRIGGER set_timestamp_tags
 BEFORE UPDATE ON public.tags
 FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
--- Post <-> Tag join
+
 CREATE TABLE IF NOT EXISTS public.post_tags (
   post_id    UUID NOT NULL REFERENCES public.posts(id) ON DELETE CASCADE,
   tag_id     UUID NOT NULL REFERENCES public.tags(id) ON DELETE CASCADE,
@@ -52,7 +58,7 @@ CREATE TABLE IF NOT EXISTS public.post_tags (
 
 CREATE INDEX IF NOT EXISTS idx_post_tags_tag_id ON public.post_tags(tag_id);
 
--- Likes
+
 CREATE TABLE IF NOT EXISTS public.post_likes (
   post_id    UUID NOT NULL REFERENCES public.posts(id) ON DELETE CASCADE,
   user_id    UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,

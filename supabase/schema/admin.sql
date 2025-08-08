@@ -3,9 +3,16 @@
 -- Relationships:
 -- - audit_logs.user_id -> users.id
 
+
 BEGIN;
 
--- Feature flags
+-- Minimal profiles table to satisfy foreign key constraint
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id UUID PRIMARY KEY,
+  -- Add other columns as needed
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS public.feature_flags (
   key          TEXT PRIMARY KEY,
   description  TEXT,

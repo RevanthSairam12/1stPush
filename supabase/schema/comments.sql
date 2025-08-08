@@ -5,7 +5,15 @@
 -- - One user has many comments
 -- - One comment can have many likes
 
+
 BEGIN;
+
+-- Minimal posts table to satisfy foreign key constraint
+CREATE TABLE IF NOT EXISTS public.posts (
+  id UUID PRIMARY KEY,
+  -- Add other columns as needed
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
 CREATE TABLE IF NOT EXISTS public.comments (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
