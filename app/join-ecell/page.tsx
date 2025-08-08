@@ -33,9 +33,9 @@ export default function JoinECellPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="max-w-4xl mx-auto">
             {/* Badge */}
-            <Badge className="mb-6 bg-white/20 text-white border-white/30 backdrop-blur-sm">
-              <Clock className="w-4 h-4 mr-2" />
-              Registration Status
+            <Badge className="mb-6 bg-green-500/20 text-white border-green-300/30 backdrop-blur-sm">
+              <CheckCircle className="w-4 h-4 mr-2" />
+              Registrations Open
             </Badge>
 
             {/* Main Heading */}
@@ -83,34 +83,38 @@ export default function JoinECellPage() {
 
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white p-8 md:p-12 text-center rounded-3xl shadow-lg border-2 border-red-200 bg-red-50/50">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Clock className="w-8 h-8 text-red-600" />
+            <div className="bg-white p-8 md:p-12 text-center rounded-3xl shadow-lg border-2 border-green-200 bg-green-50/50">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-                Registrations Are Currently Closed
+                Registrations Are Now Open!
               </h2>
               <p className="text-base md:text-lg text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Thank you for your interest in joining E-Cell REC! We're currently not accepting new registrations,
-                but we'll be opening applications soon for the next batch of aspiring entrepreneurs.
+                Join E-Cell REC and be part of the entrepreneurial revolution! We're now accepting applications
+                for passionate students who want to make their mark in the startup ecosystem.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div className="text-left">
-                  <h3 className="font-semibold text-gray-900 mb-2">Stay Updated</h3>
+                  <h3 className="font-semibold text-gray-900 mb-2">What You'll Get</h3>
                   <p className="text-gray-600 text-sm">
-                    Follow our social media channels and website for announcements about the next registration period.
+                    Access to exclusive events, mentorship opportunities, networking sessions, and startup resources.
                   </p>
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-gray-900 mb-2">Get Notified</h3>
+                  <h3 className="font-semibold text-gray-900 mb-2">Join Today</h3>
                   <p className="text-gray-600 text-sm">
-                    Subscribe to our newsletter to be the first to know when registrations open again.
+                    Fill out our registration form and become part of our growing entrepreneurial community.
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold text-base min-w-[180px] transition-all duration-300">
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Register Now
+                </Button>
                 <Link href="/events">
                   <Button className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold text-base min-w-[180px] transition-all duration-300">
                     <Calendar className="w-4 h-4 mr-2" />
@@ -137,10 +141,10 @@ export default function JoinECellPage() {
             {/* Header Section */}
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                What You Can Do Now
+                Get Started Today
               </h2>
               <p className="text-base md:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
-                While you wait for registrations to open, here are some ways to stay connected and prepare
+                Now that registrations are open, here are some ways to get involved and prepare for your entrepreneurial journey
               </p>
             </div>
 
@@ -154,9 +158,11 @@ export default function JoinECellPage() {
                 <p className="text-white/80 mb-4 text-sm">
                   Stay updated with our latest activities, events, and success stories through our social media channels.
                 </p>
-                <Button className="bg-white text-blue-600 hover:bg-white/90 px-6 py-2 rounded-lg font-medium text-sm transition-all duration-300">
-                  Learn More
-                </Button>
+                <Link href="/events">
+                  <Button className="bg-white text-blue-600 hover:bg-white/90 px-6 py-2 rounded-lg font-medium text-sm transition-all duration-300">
+                    Learn More
+                  </Button>
+                </Link>
               </div>
 
               <div className="bg-white/10 backdrop-blur-sm p-6 text-center rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300">

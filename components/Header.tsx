@@ -15,7 +15,7 @@ const Header = () => {
     { name: "Past Events", href: "/events" },
     { name: "Resources", href: "/resources" },
     { name: "Startups", href: "/startups" },
-    { name: "Join E-Cell", href: "/join-ecell" },
+    { name: "Advisory Board", href: "/advisory-board" },
   ];
 
   useEffect(() => {
