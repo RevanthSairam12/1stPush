@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { useStudentAuth } from "@/contexts/AuthContext";
+import { useAdminAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -141,7 +141,8 @@ interface Submission {
 
 const AdminRegistrations = () => {
   const router = useRouter();
-  const { admin, adminLogout } = useStudentAuth();
+  // Use admin auth hook (was incorrectly using student auth which prevented recognizing logged-in admin)
+  const { admin, adminLogout } = useAdminAuth();
   const searchParams = useSearchParams();
 
   // Check admin authentication and redirect if not logged in

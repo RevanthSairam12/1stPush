@@ -76,3 +76,66 @@ ALTER TABLE public.students
 -- Now that teams exists, update students.team_id FK is valid (already declared as forward reference)
 
 COMMIT;
+-- ---------------------------------------------------------------------------
+-- Sync: Ensure admin dashboard (which reads users + registrations) reflects
+--       student signups. When a row is inserted into public.students we
+--       create (if missing) a corresponding public.users row and a
+--       public.registrations row so existing application queries that join
+--       registrations -> users start returning the new student immediately.
+--       (Only INSERT is handled; extend to UPDATE if needed.)
+-- ---------------------------------------------------------------------------
+
+-- Function to sync a student into users & registrations
+CREATE OR REPLACE FUNCTION public.sync_student_to_user()
+RETURNS trigger AS $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Try to find existing user by email or roll_number
+  SELECT id INTO v_user_id
+  FROM public.users
+  WHERE email = NEW.email OR roll_number = NEW.roll_number
+  LIMIT 1;
+
+  IF v_user_id IS NULL THEN
+    -- Insert minimal user record using student data. Provide placeholder values
+    -- for required non-null columns if actual values are not tracked on students.
+    INSERT INTO public.users (
+      email, full_name, roll_number, branch, year, graduation_year, phone_number, status
+    ) VALUES (
+      NEW.email,
+      NEW.name,
+      NEW.roll_number,
+      'NA',               -- branch placeholder
+      'NA',               -- year placeholder
+      to_char(NOW(), 'YYYY'), -- graduation_year placeholder (current year)
+      'NA',               -- phone placeholder
+      'active'
+    )
+    RETURNING id INTO v_user_id;
+  END IF;
+
+  -- Ensure a registration exists for this user so admin dashboard picks it up
+  INSERT INTO public.registrations (user_id, status)
+  VALUES (v_user_id, 'active')
+  ON CONFLICT (user_id) DO NOTHING;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Drop existing trigger to avoid duplicates, then recreate
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_trigger WHERE tgname = 'trg_sync_student_to_user'
+      AND tgrelid = 'public.students'::regclass
+  ) THEN
+    EXECUTE 'DROP TRIGGER trg_sync_student_to_user ON public.students';
+  END IF;
+END$$;
+
+CREATE TRIGGER trg_sync_student_to_user
+AFTER INSERT ON public.students
+FOR EACH ROW EXECUTE FUNCTION public.sync_student_to_user();
+
