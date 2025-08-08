@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useStudentAuth } from '@/contexts/AuthContext'
-import { MockDataService } from '@/lib/mockData'
+import { DatabaseService } from '@/lib/supabase'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar'
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
@@ -61,7 +61,7 @@ export default function DashboardPage() {
       try {
         setIsLoading(true)
         console.log('Fetching dashboard data for student:', student.id)
-        const result = await MockDataService.getStudentDashboardData(student.id)
+        const result = await DatabaseService.getStudentDashboardData(student.id)
 
         if (result.error) {
           throw new Error(result.error.message || 'Failed to fetch dashboard data')

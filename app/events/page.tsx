@@ -17,13 +17,13 @@ export default function EventsPage() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Section - EO Events */}
+      {/* Hero Section - E-Cell Events */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden pt-16">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
             src="/group/group1.jpg"
-            alt="EO Events - E-Cell REC"
+            alt="E-Cell Events - E-Cell REC"
             fill
             className="object-cover object-center"
             priority
@@ -37,7 +37,7 @@ export default function EventsPage() {
           <div className="max-w-4xl mx-auto">
             {/* Main Heading */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
-              EO Events
+              E-Cell Events
             </h1>
 
             {/* Subheading */}
@@ -55,7 +55,7 @@ export default function EventsPage() {
             {/* Header Section */}
             <div className="text-center mb-8">
               <p className="text-base md:text-lg text-white/90 max-w-4xl mx-auto leading-relaxed">
-                EO events are designed to help entrepreneurs learn and grow through unique, once-in-a-lifetime experiences.
+                E-Cell events are designed to help entrepreneurs learn and grow through unique, once-in-a-lifetime experiences.
                 From intimate forums to large-scale conferences, our events create meaningful connections and provide valuable
                 insights that drive business success and personal development.
               </p>
@@ -198,8 +198,8 @@ export default function EventsPage() {
           {/* Description Text */}
           <div className="text-center mb-12 max-w-4xl mx-auto">
             <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-6">
-              Throughout the world each year EO hosts a variety of regional events that are tailored to the unique landscape of a particular area. From Asia-Pac to the Caribbean, the Pacific to Northern Africa and the Arabian
-              Gulf, EO's annual Regional Events expand business opportunities beyond any single city or country.
+              Throughout the world each year E-Cell hosts a variety of regional events that are tailored to the unique landscape of a particular area. From Asia-Pac to the Caribbean, the Pacific to Northern Africa and the Arabian
+              Gulf, E-Cell's annual Regional Events expand business opportunities beyond any single city or country.
             </p>
             <p className="text-sm md:text-base text-gray-700 leading-relaxed">
               Regional Events also feature a mix of top keynote speakers, along with trends, panels, and structured networking in a gathering of 1,000-1,200 entrepreneurs. Because not the premises are very welcoming

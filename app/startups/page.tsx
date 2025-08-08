@@ -284,7 +284,7 @@ export default function Startups() {
                 <div className="opacity-90">Startups Supported</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2">₹50L+</div>
+                <div className="text-3xl font-bold mb-2">₹5L+</div>
                 <div className="opacity-90">Total Funding</div>
               </div>
               <div className="text-center">

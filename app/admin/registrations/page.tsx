@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect, Suspense } from "react";
+import { useRouter } from "next/navigation";
+import { useStudentAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,8 +15,6 @@ import {
   Users,
   FileText,
   ArrowLeft,
-  Lock,
-  Shield,
   ChevronDown,
   ChevronUp,
   Eye,
@@ -34,7 +34,8 @@ import {
   X,
   Check,
   Flag,
-  Grid3X3
+  Grid3X3,
+  Loader2
 } from "lucide-react";
 import { 
   Table, 
@@ -59,8 +60,7 @@ import {
   DialogTitle,
   DialogFooter
 } from "@/components/ui/dialog";
-// import { DatabaseService } from "@/lib/supabase";
-import MockData from "@/lib/mockData";
+import { DatabaseService } from "@/lib/supabase";
 import { useSearchParams } from "next/navigation";
 
 // Types for registration data (using Supabase types)
@@ -140,7 +140,18 @@ interface Submission {
 }
 
 const AdminRegistrations = () => {
+  const router = useRouter();
+  const { admin, adminLogout } = useStudentAuth();
   const searchParams = useSearchParams();
+
+  // Check admin authentication and redirect if not logged in
+  useEffect(() => {
+    if (!admin) {
+      router.push('/admin/login');
+      return;
+    }
+    loadData();
+  }, [admin, router]);
 
   // Set dark theme on component mount
   useEffect(() => {
@@ -157,12 +168,8 @@ const AdminRegistrations = () => {
   // const [submissions, setSubmissions] = useState<SubmissionData[]>([]);
   const [filteredData, setFilteredData] = useState<RegistrationWithUser[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showLogin, setShowLogin] = useState(true);
-  const [adminCredentials, setAdminCredentials] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
-  
+
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("all");
@@ -227,30 +234,13 @@ const AdminRegistrations = () => {
   });
   */
 
-  // Authentication
-  const handleLogin = async () => {
-    try {
-      const result = await MockData.authenticateAdmin(adminCredentials.username, adminCredentials.password);
-      if (result.data) {
-        setIsAuthenticated(true);
-        setShowLogin(false);
-        loadData();
-      } else {
-        alert('Invalid credentials!');
-      }
-    } catch (error) {
-      console.error('Authentication error:', error);
-      alert('Authentication failed!');
-    }
-  };
-
   // Data loading
   const loadData = async () => {
     setLoading(true);
     try {
       const [registrationsResult, eventsResult] = await Promise.all([
-        MockData.getAllRegistrations(),
-        MockData.getAllEvents()
+        DatabaseService.getAllRegistrations(),
+        DatabaseService.getAllEvents()
       ]);
 
       if (registrationsResult.data) {
@@ -422,7 +412,7 @@ const AdminRegistrations = () => {
   // Calendar event functions
   const addEvent = async (eventData: Omit<Event, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-      const result = await MockData.createEvent({
+      const result = await DatabaseService.createEvent({
         ...eventData,
         created_by: 'admin'
       });
@@ -437,7 +427,7 @@ const AdminRegistrations = () => {
 
   const updateEvent = async (eventId: string, eventData: Partial<Event>) => {
     try {
-      await MockData.updateEvent(eventId, eventData);
+      await DatabaseService.updateEvent(eventId, eventData);
       await loadData();
     } catch (error) {
       console.error('Error updating event:', error);
@@ -446,7 +436,7 @@ const AdminRegistrations = () => {
 
   const deleteEvent = async (eventId: string) => {
     try {
-      await MockData.deleteEvent(eventId);
+      await DatabaseService.deleteEvent(eventId);
       await loadData();
     } catch (error) {
       console.error('Error deleting event:', error);
@@ -518,7 +508,7 @@ const AdminRegistrations = () => {
     // Fetch submission data if user has submitted
     if (registration.submission_status === 'submitted') {
       try {
-        const submissionResult = await MockData.getSubmissionByUserId(registration.user_id);
+        const submissionResult = await DatabaseService.getSubmissionByUserId(registration.user_id);
         if (submissionResult.data) {
           setSelectedSubmission(submissionResult.data);
         }
@@ -572,78 +562,13 @@ const AdminRegistrations = () => {
     return matchesSearch && matchesFilter;
   });
 
-  // Login screen
-  if (showLogin) {
+  // Show loading if admin is not authenticated (will redirect)
+  if (!admin) {
     return (
-      <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4" style={{
-        backgroundColor: 'hsl(240 10% 3.9%)',
-        color: 'hsl(0 0% 98%)'
-      }}>
-        {/* Background elements */}
-        <div className="absolute top-20 left-20 w-32 h-32 rounded-full bg-gradient-primary opacity-20 blur-xl animate-pulse" />
-        <div className="absolute bottom-20 right-20 w-48 h-48 rounded-full bg-gradient-accent opacity-15 blur-xl animate-pulse delay-1000" />
-
-        <div className="w-full max-w-md relative z-10">
-          <Card className="bg-card/50 backdrop-blur-sm border-primary/20 shadow-2xl">
-            <CardHeader className="text-center pb-4">
-              <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mb-4 shadow-lg">
-                <Shield className="h-8 w-8 text-primary-foreground" />
-              </div>
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-                Admin Access
-              </CardTitle>
-              <p className="text-muted-foreground text-sm">
-                Registrations Management Panel
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="username" className="font-medium">Username</Label>
-                <Input
-                  id="username"
-                  value={adminCredentials.username}
-                  onChange={(e) => setAdminCredentials({...adminCredentials, username: e.target.value})}
-                  className="bg-background/50"
-                  placeholder="Enter username"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="password" className="font-medium">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={adminCredentials.password}
-                  onChange={(e) => setAdminCredentials({...adminCredentials, password: e.target.value})}
-                  className="bg-background/50"
-                  placeholder="Enter password"
-                />
-              </div>
-
-              <Button
-                onClick={handleLogin}
-                className="w-full bg-gradient-primary hover:shadow-glow-primary transition-all duration-300 font-bold py-3"
-              >
-                <Lock className="h-4 w-4 mr-2" />
-                Login
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => window.location.href = '/'}
-                className="w-full font-bold"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-            </CardContent>
-
-            <div className="p-4 text-center text-sm text-muted-foreground border-t border-border">
-              <p>Demo Credentials:</p>
-              <p>Username: admin</p>
-              <p>Password: ecell2024</p>
-            </div>
-          </Card>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p>Redirecting to admin login...</p>
         </div>
       </div>
     );
@@ -692,7 +617,10 @@ const AdminRegistrations = () => {
           <div className="flex gap-2">
             <Button
               variant="outline"
-              onClick={() => setShowLogin(true)}
+              onClick={() => {
+                adminLogout();
+                router.push('/admin/login');
+              }}
               className="gap-2"
             >
               <ArrowLeft className="h-4 w-4" />

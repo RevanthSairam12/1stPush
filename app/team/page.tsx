@@ -121,13 +121,13 @@ export default function Team() {
     <div className="min-h-screen bg-slate-900">
       <Header />
 
-      {/* EO Leadership Hero Section - Exact same design as shown in image */}
+      {/* E-Cell Leadership Hero Section - Exact same design as shown in image */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden pt-16">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
             src="/group/group1.jpg"
-            alt="EO Leadership Group Photo"
+            alt="E-Cell Leadership Group Photo"
             fill
             className="object-cover object-center"
             priority
@@ -141,7 +141,7 @@ export default function Team() {
           <div className="max-w-4xl mx-auto">
             {/* Main Heading */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 leading-tight">
-              EO Leadership
+              E-Cell Leadership
             </h1>
 
             {/* Subheading */}
@@ -158,7 +158,7 @@ export default function Team() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-blue-600 rounded-2xl p-8 md:p-12 shadow-lg">
               <p className="text-white text-base md:text-lg leading-relaxed text-center">
-                The Entrepreneurs' Organization (EO) is steered by a dynamic group of visionary leaders and business owners who have
+                The E-Cell is steered by a dynamic group of visionary leaders and business owners who have
                 navigated the entrepreneurship journey themselves. Our global leadership team combines deep business acumen with a
                 passion for fostering global connections and growth for entrepreneurs everywhere.
               </p>
@@ -179,9 +179,9 @@ export default function Team() {
             {/* Description - Left aligned */}
             <div className="text-gray-700 text-base leading-relaxed">
               <p className="text-left">
-                The <span className="font-semibold text-blue-600">Global Board of Directors</span> leading Entrepreneurs' Organization plays a crucial role in overseeing the organization's strategic direction,
+                The <span className="font-semibold text-blue-600">Global Board of Directors</span> leading E-Cell plays a crucial role in overseeing the organization's strategic direction,
                 financial stewardship, and its continued growth and impact. This distinguished group of entrepreneurs brings a wealth of <span className="font-semibold">business and
-                membership experience</span> and insights to guide <span className="text-blue-600 underline cursor-pointer hover:text-blue-800">EO's global mission</span>.
+                membership experience</span> and insights to guide <span className="text-blue-600 underline cursor-pointer hover:text-blue-800">E-Cell's global mission</span>.
               </p>
             </div>
           </div>
@@ -232,22 +232,22 @@ export default function Team() {
         </div>
       </section>
 
-      {/* EO's Path of Leadership Section - Exact same design as shown in image */}
+      {/* E-Cell's Path of Leadership Section - Exact same design as shown in image */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             {/* Section Title - Left aligned */}
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-left">
-              EO's Path of Leadership
+              E-Cell's Path of Leadership
             </h2>
 
             {/* Description - Left aligned */}
             <div className="text-gray-700 text-base leading-relaxed mb-12">
               <p className="text-left">
-                EO members have the opportunity to shape the <span className="text-blue-600 underline cursor-pointer hover:text-blue-800">member experience</span> and co-create the future of our
+                E-Cell members have the opportunity to shape the <span className="text-blue-600 underline cursor-pointer hover:text-blue-800">member experience</span> and co-create the future of our
                 organization across a variety of local, regional, global and functional roles that serve all aspects of our
                 organizational community. Serving in volunteer leadership roles are typically <span className="text-blue-600 underline cursor-pointer hover:text-blue-800">one year</span>
-                We encourage members to expand their leadership skills by serving in <span className="text-blue-600 underline cursor-pointer hover:text-blue-800">EO's Path of Leadership</span>.
+                We encourage members to expand their leadership skills by serving in <span className="text-blue-600 underline cursor-pointer hover:text-blue-800">E-Cell's Path of Leadership</span>.
               </p>
             </div>
           </div>
@@ -257,8 +257,8 @@ export default function Team() {
         <div className="relative h-[400px] md:h-[500px] overflow-hidden">
           <div className="absolute inset-0">
             <Image
-              src="/mountain-leadership.jpg"
-              alt="Person on mountain path representing EO's Path of Leadership"
+              src="/group/group1.jpg"
+              alt="Person on mountain path representing E-Cell's Path of Leadership"
               fill
               className="object-cover object-center"
             />

@@ -1,8 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Supabase configuration
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key'
+// Prefer environment variables; fall back to provided project values for convenience during development
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xnedeeqfypkrvzcvxzzd.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuZWRlZXFmeXBrcnZ6Y3Z4enpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQxMTY5OTcsImV4cCI6MjA2OTY5Mjk5N30.U5H1x4NrzmKfxzyW9PzI5L3GEVCNbhm4MK5XOag6I8E'
 
 // Create Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
@@ -383,22 +384,46 @@ export class DatabaseService {
   // Admin operations
   static async authenticateAdmin(username: string, password: string) {
     try {
-      // For demo purposes, we'll use hardcoded credentials
-      // In production, this should use proper password hashing
-      if (username === 'admin' && password === 'ecell2024') {
+      // Prefer Supabase Auth if configured (treat username as email)
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: username,
+        password
+      })
+      if (!authError && authData?.user) {
         return {
           data: {
-            id: 'admin-1',
-            username: 'admin',
-            email: 'admin@ecellrec.com',
+            id: authData.user.id,
+            username: authData.user.user_metadata?.username || authData.user.email?.split('@')[0] || 'admin',
+            email: authData.user.email || username,
             role: 'admin' as const,
-            created_at: new Date().toISOString(),
+            created_at: authData.user.created_at,
             updated_at: new Date().toISOString()
           },
           error: null
         }
-      } else {
-        return { data: null, error: new Error('Invalid credentials') }
+      }
+
+      // Fallback: check admin_users table by username or email
+      const { data, error } = await supabase
+        .from(TABLES.ADMIN_USERS)
+        .select('*')
+        .or(`username.eq.${username},email.eq.${username}`)
+        .single()
+
+      if (error || !data) throw error || new Error('Invalid credentials')
+
+      // If you have a password column (e.g., password or password_hash),
+      // compare it here. For now, assume Supabase Auth handles password.
+      return {
+        data: {
+          id: (data as any).id,
+          username: (data as any).username,
+          email: (data as any).email,
+          role: (data as any).role || 'admin',
+          created_at: (data as any).created_at,
+          updated_at: (data as any).updated_at
+        },
+        error: null
       }
     } catch (error) {
       console.error('Error authenticating admin:', error)
@@ -768,6 +793,23 @@ export class RealtimeService {
 
   static unsubscribe(subscription: any) {
     return supabase.removeChannel(subscription)
+  }
+
+  // Search students by partial name, email, or roll number
+  static async searchStudents(query: string, limit: number = 10) {
+    try {
+      const { data, error } = await supabase
+        .from(TABLES.STUDENTS)
+        .select('*')
+        .or(`name.ilike.%${query}%,email.ilike.%${query}%,roll_number.ilike.%${query}%`)
+        .limit(limit)
+
+      if (error) throw error
+      return { data, error: null }
+    } catch (error) {
+      console.error('Error searching students:', error)
+      return { data: null, error }
+    }
   }
 }
 

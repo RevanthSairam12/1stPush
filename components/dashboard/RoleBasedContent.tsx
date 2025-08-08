@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useStudentAuth } from '@/contexts/AuthContext'
-import { MockDataService } from '@/lib/mockData'
+import { DatabaseService } from '@/lib/supabase'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -125,16 +125,10 @@ export function RoleBasedContent({
     try {
       setIsLoading(true)
       
-      // For development, simulate creating a team and updating role
-      // In production, use DatabaseService.createTeam(student.id)
-      const teamResult = {
-        data: {
-          id: `team_${Date.now()}`,
-          leader_id: student.id,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        error: null
+      // Create team for the student (leader)
+      const teamResult = await DatabaseService.createTeam(student.id)
+      if (teamResult.error || !teamResult.data) {
+        throw new Error(teamResult.error?.message || 'Failed to create team')
       }
 
       // Update student role to leader
@@ -144,7 +138,7 @@ export function RoleBasedContent({
       }
 
       // Refresh dashboard data
-      const dashboardResult = await MockDataService.getStudentDashboardData(student.id)
+      const dashboardResult = await DatabaseService.getStudentDashboardData(student.id)
       if (dashboardResult.data) {
         onDataUpdate(dashboardResult.data)
       }
@@ -448,28 +442,36 @@ export function RoleBasedContent({
       try {
         setIsLoading(true)
 
-        // Simulate idea submission/update
-        const newIdea = {
-          id: idea?.id || `idea_${Date.now()}`,
-          team_id: team?.id,
-          title: ideaForm.title,
-          description: ideaForm.description,
-          status: 'submitted' as const,
-          created_at: idea?.created_at || new Date().toISOString(),
-          updated_at: new Date().toISOString()
+        // Create or update idea in database
+        let savedIdea
+        if (idea?.id) {
+          const updateRes = await DatabaseService.updateIdea(idea.id, {
+            title: ideaForm.title,
+            description: ideaForm.description,
+            status: 'submitted' as const
+          })
+          if (updateRes.error || !updateRes.data) {
+            throw new Error(updateRes.error?.message || 'Failed to update idea')
+          }
+          savedIdea = updateRes.data
+        } else {
+          const createRes = await DatabaseService.createIdea({
+            team_id: team?.id,
+            title: ideaForm.title,
+            description: ideaForm.description,
+            status: 'submitted' as const
+          })
+          if (createRes.error || !createRes.data) {
+            throw new Error(createRes.error?.message || 'Failed to submit idea')
+          }
+          savedIdea = createRes.data
         }
 
-        // Update dashboard data
-        const updatedData = {
-          student,
-          team: {
-            ...team,
-            ideas: [newIdea]
-          },
-          idea: newIdea
+        // Refresh from backend to ensure consistency
+        const dashboardResult = await DatabaseService.getStudentDashboardData(student.id)
+        if (dashboardResult.data) {
+          onDataUpdate(dashboardResult.data)
         }
-
-        onDataUpdate(updatedData)
         setIsEditing(false)
 
         toast({
@@ -686,21 +688,22 @@ export function RoleBasedContent({
 
       setIsSearching(true)
       try {
-        // Simulate search for students
-        await new Promise(resolve => setTimeout(resolve, 500))
+        // Use fuzzy search for partial matches on name, email, or roll number
+        const searchRes = await DatabaseService.searchStudents(searchTerm, 10)
+        if (searchRes.error) {
+          throw searchRes.error
+        }
 
-        // Mock search results
-        const mockResults = [
-          { id: 'student_16', name: 'Amit Kumar', roll_number: '23981A016', email: 'amit.kumar@raghuenggcollege.in', branch: 'CSE' },
-          { id: 'student_17', name: 'Riya Sharma', roll_number: '23981A017', email: 'riya.sharma@raghuenggcollege.in', branch: 'ECE' },
-          { id: 'student_18', name: 'Karan Singh', roll_number: '23981A018', email: 'karan.singh@raghuenggcollege.in', branch: 'ME' }
-        ].filter(student =>
-          student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          student.roll_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          student.email.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        // Map to expected format
+        const results = (searchRes.data || []).map((s: any) => ({
+          id: s.id,
+          name: s.name,
+          roll_number: s.roll_number,
+          email: s.email,
+          branch: s.branch || 'N/A'
+        }))
 
-        setSearchResults(mockResults)
+        setSearchResults(results)
       } catch (error) {
         toast({
           title: 'Error',
@@ -727,25 +730,17 @@ export function RoleBasedContent({
           return
         }
 
-        // Simulate adding team member
-        const newMember = {
-          id: `tm_${Date.now()}`,
-          team_id: team.id,
-          student_id: studentToAdd.id,
-          students: studentToAdd,
-          created_at: new Date().toISOString()
+        // Add team member in backend
+        const addRes = await DatabaseService.addTeamMember(team.id, studentToAdd.id)
+        if (addRes.error) {
+          throw new Error(addRes.error.message || 'Failed to add member')
         }
 
-        const updatedTeam = {
-          ...team,
-          team_members: [...teamMembers, newMember]
+        // Refresh data
+        const dashboardResult = await DatabaseService.getStudentDashboardData(student.id)
+        if (dashboardResult.data) {
+          onDataUpdate(dashboardResult.data)
         }
-
-        onDataUpdate({
-          student,
-          team: updatedTeam,
-          idea
-        })
 
         setSearchTerm('')
         setSearchResults([])
@@ -770,17 +765,14 @@ export function RoleBasedContent({
       try {
         setIsLoading(true)
 
-        const updatedMembers = teamMembers.filter((member: any) => member.id !== memberToRemove.id)
-        const updatedTeam = {
-          ...team,
-          team_members: updatedMembers
-        }
+        // Remove team member in backend
+        await DatabaseService.removeTeamMember(team.id, memberToRemove.student_id)
 
-        onDataUpdate({
-          student,
-          team: updatedTeam,
-          idea
-        })
+        // Refresh
+        const dashboardResult = await DatabaseService.getStudentDashboardData(student.id)
+        if (dashboardResult.data) {
+          onDataUpdate(dashboardResult.data)
+        }
 
         toast({
           title: 'Success!',

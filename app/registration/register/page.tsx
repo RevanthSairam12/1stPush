@@ -17,6 +17,7 @@ import { PasswordStrength } from "@/components/ui/password-strength";
 import { SimpleThemeToggle } from "@/components/ui/theme-toggle";
 import { DatabaseService } from "@/lib/supabase";
 import { MockDataService } from "@/lib/mockData";
+import { supabase } from "@/lib/supabase";
 
 interface RegisterForm {
   fullName: string;
@@ -38,6 +39,23 @@ export default function RegisterPage() {
   const router = useRouter();
 
   const password = watch("password");
+
+  const handleGoogleSignup = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: { hd: 'raghuenggcollege.in' }
+        }
+      })
+      if (error) throw error
+    } catch (e) {
+      console.error('Google OAuth error:', e)
+      toast({ title: 'Google Sign-up Failed', description: 'Please try again.', variant: 'destructive' })
+    }
+  }
+
 
 
 
@@ -393,6 +411,25 @@ export default function RegisterPage() {
                   <p className="text-xs text-muted-foreground">
                     We will never share your data with anyone outside E-Cell REC.
                   </p>
+
+	                {/* Or divider */}
+	                <div className="relative my-3">
+	                  <div className="absolute inset-0 flex items-center">
+	                    <span className="w-full border-t" />
+	                  </div>
+	                  <div className="relative flex justify-center text-xs">
+	                    <span className="bg-card px-2 text-muted-foreground">or</span>
+	                  </div>
+	                </div>
+
+	                {/* Google Sign-up */}
+	                <Button type="button" variant="outline" className="w-full" onClick={handleGoogleSignup}>
+	                  <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+	                    <path fill="#EA4335" d="M12 10.2v3.6h5.1c-.2 1.2-1.5 3.6-5.1 3.6-3 0-5.4-2.5-5.4-5.4S9 6.6 12 6.6c1.7 0 2.9.7 3.6 1.3l2.5-2.5C16.8 3.9 14.6 3 12 3 6.9 3 2.7 7.2 2.7 12.3S6.9 21.6 12 21.6c6.3 0 9-4.4 9-8.1 0-.5 0-.8-.1-1.3H12z"/>
+	                  </svg>
+	                  Sign up with Google (REC Email)
+	                </Button>
+
                 </div>
 
                 {/* Submit Button */}

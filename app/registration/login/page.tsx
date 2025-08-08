@@ -14,6 +14,7 @@ import { ECellLogo } from "@/components/ECellLogo";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { SimpleThemeToggle } from "@/components/ui/theme-toggle";
 import { MockDataService } from "@/lib/mockData";
+import { supabase } from "@/lib/supabase";
 
 interface LoginForm {
   emailOrRoll: string;
@@ -93,6 +94,29 @@ export default function LoginPage() {
 
     router.push("/registration/dashboard");
   };
+  const handleGoogleLogin = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            hd: 'raghuenggcollege.in'
+          }
+        }
+      })
+      if (error) throw error
+      // On web, Supabase will redirect to Google; this line won’t execute on success
+    } catch (e) {
+      console.error('Google OAuth error:', e)
+      toast({
+        title: 'Google Sign-in Failed',
+        description: 'Please try again.',
+        variant: 'destructive'
+      })
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center transition-colors duration-300">
@@ -104,7 +128,7 @@ export default function LoginPage() {
       {/* Background elements */}
       <div className="absolute top-20 left-20 w-32 h-32 rounded-full bg-gradient-primary opacity-20 blur-xl animate-pulse" />
       <div className="absolute bottom-20 right-20 w-48 h-48 rounded-full bg-gradient-accent opacity-15 blur-xl animate-pulse delay-1000" />
-      
+
       <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
@@ -181,6 +205,25 @@ export default function LoginPage() {
                     <p className="text-destructive text-sm">{errors.password.message}</p>
                   )}
                 </div>
+
+	                {/* Or divider */}
+	                <div className="relative my-4">
+	                  <div className="absolute inset-0 flex items-center">
+	                    <span className="w-full border-t" />
+	                  </div>
+	                  <div className="relative flex justify-center text-xs">
+	                    <span className="bg-card px-2 text-muted-foreground">or</span>
+	                  </div>
+	                </div>
+
+	                {/* Google Sign-In */}
+	                <Button type="button" variant="outline" className="w-full" onClick={handleGoogleLogin}>
+	                  <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+	                    <path fill="#EA4335" d="M12 10.2v3.6h5.1c-.2 1.2-1.5 3.6-5.1 3.6-3 0-5.4-2.5-5.4-5.4S9 6.6 12 6.6c1.7 0 2.9.7 3.6 1.3l2.5-2.5C16.8 3.9 14.6 3 12 3 6.9 3 2.7 7.2 2.7 12.3S6.9 21.6 12 21.6c6.3 0 9-4.4 9-8.1 0-.5 0-.8-.1-1.3H12z"/>
+	                  </svg>
+	                  Continue with Google
+	                </Button>
+
 
                 {/* Forgot Password */}
                 <div className="text-right">

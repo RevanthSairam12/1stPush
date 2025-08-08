@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
 import { Toaster } from '@/components/ui/toaster'
-import { Loader2, Crown, User, Mail, Hash } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 export default function StudentLoginPage() {
   const { studentLogin, isLoading, student, isStudentAuthenticated } = useStudentAuth()
@@ -42,7 +43,7 @@ export default function StudentLoginPage() {
 
     try {
       console.log('Attempting login with:', formData.emailOrRoll)
-      const result = await studentLogin(formData.emailOrRoll, formData.password || 'demo')
+      const result = await studentLogin(formData.emailOrRoll, formData.password)
       console.log('Login result:', result)
 
       if (result.success) {
@@ -80,16 +81,32 @@ export default function StudentLoginPage() {
       ...prev,
       [e.target.name]: e.target.value
     }))
+
+  const handleGoogleLogin = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            hd: 'raghuenggcollege.in'
+          }
+        }
+      })
+      if (error) throw error
+    } catch (e) {
+      console.error('Google OAuth error:', e)
+      toast({
+        title: 'Google Sign-in Failed',
+        description: 'Please try again.',
+        variant: 'destructive'
+      })
+    }
   }
 
-  // Demo accounts for testing
-  const demoAccounts = [
-    { name: 'Arjun Sharma', email: 'arjun.sharma@raghuenggcollege.in', roll: '23981A001', role: 'Team Leader' },
-    { name: 'Priya Patel', email: 'priya.patel@raghuenggcollege.in', roll: '23981A002', role: 'Team Leader' },
-    { name: 'Rohan Verma', email: 'rohan.verma@raghuenggcollege.in', roll: '23981A011', role: 'Member' },
-    { name: 'Kavya Menon', email: 'kavya.menon@raghuenggcollege.in', roll: '23981A012', role: 'Member' },
-    { name: 'Nikhil Pandey', email: 'nikhil.pandey@raghuenggcollege.in', roll: '23981A015', role: 'Individual' }
-  ]
+  }
+
+
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{
@@ -108,7 +125,7 @@ export default function StudentLoginPage() {
       {/* Background elements */}
       <div className="absolute top-20 left-20 w-32 h-32 rounded-full bg-gradient-primary opacity-10 blur-xl animate-pulse" />
       <div className="absolute bottom-20 right-20 w-48 h-48 rounded-full bg-gradient-accent opacity-8 blur-xl animate-pulse delay-1000" />
-      
+
       <div className="flex items-center justify-center min-h-screen p-4">
         <div className="w-full max-w-4xl space-y-6">
           {/* Header */}
@@ -123,7 +140,7 @@ export default function StudentLoginPage() {
             <p className="text-muted-foreground">Access your entrepreneurship journey</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="max-w-md mx-auto">
             {/* Login Form */}
             <Card className="card-dark dashboard-card-hover">
               <CardHeader>
@@ -147,25 +164,23 @@ export default function StudentLoginPage() {
                       required
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
                     <Input
                       id="password"
                       name="password"
                       type="password"
-                      placeholder="Enter password (demo: any password works)"
+                      placeholder="Enter your password"
                       value={formData.password}
                       onChange={handleInputChange}
                       className="input-dark"
+                      required
                     />
-                    <p className="text-xs text-muted-foreground">
-                      For demo purposes, any password will work
-                    </p>
                   </div>
 
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="w-full button-primary"
                     disabled={isLoading}
                   >
@@ -178,66 +193,26 @@ export default function StudentLoginPage() {
                       'Login to Dashboard'
                     )}
                   </Button>
+
+                  <div className="relative my-4">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs">
+                      <span className="bg-card px-2 text-muted-foreground">or</span>
+                    </div>
+                  </div>
+
+                  <Button type="button" variant="outline" className="w-full" onClick={handleGoogleLogin}>
+                    <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+                      <path fill="#EA4335" d="M12 10.2v3.6h5.1c-.2 1.2-1.5 3.6-5.1 3.6-3 0-5.4-2.5-5.4-5.4S9 6.6 12 6.6c1.7 0 2.9.7 3.6 1.3l2.5-2.5C16.8 3.9 14.6 3 12 3 6.9 3 2.7 7.2 2.7 12.3S6.9 21.6 12 21.6c6.3 0 9-4.4 9-8.1 0-.5 0-.8-.1-1.3H12z"/>
+                    </svg>
+                    Continue with Google
+                  </Button>
                 </form>
               </CardContent>
             </Card>
-
-            {/* Demo Accounts */}
-            <Card className="card-dark dashboard-card-hover">
-              <CardHeader>
-                <CardTitle>Demo Accounts</CardTitle>
-                <CardDescription>
-                  Click on any account below to quickly login and test the dashboard
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {demoAccounts.map((account, index) => (
-                  <div
-                    key={index}
-                    className="p-3 rounded-lg border border-border/50 hover:border-primary/30 transition-colors cursor-pointer"
-                    onClick={() => setFormData({ emailOrRoll: account.email, password: 'demo' })}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                        {account.role === 'Team Leader' ? (
-                          <Crown className="h-4 w-4 text-yellow-500" />
-                        ) : (
-                          <User className="h-4 w-4 text-blue-500" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm">{account.name}</p>
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Mail className="h-3 w-3" />
-                            {account.email}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Hash className="h-3 w-3" />
-                            {account.roll}
-                          </span>
-                        </div>
-                        <p className="text-xs text-primary">{account.role}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
           </div>
-
-          {/* Instructions */}
-          <Card className="card-dark">
-            <CardContent className="p-4">
-              <div className="text-center space-y-2">
-                <h3 className="font-semibold">Testing Instructions</h3>
-                <p className="text-sm text-muted-foreground">
-                  Use any of the demo accounts above to test different user roles and dashboard features. 
-                  Team Leaders can manage ideas and teams, while Members can view team information and submit individual ideas.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
       <Toaster />

@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { User, Student, DatabaseService } from '@/lib/supabase'
-import { MockDataService } from '@/lib/mockData'
 
 interface AuthUser {
   id: string
@@ -84,9 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const initializeAuth = () => {
       console.log('AuthContext: Initializing authentication...')
       try {
-        // Initialize mock data for development
-        MockDataService.initializeMockData()
-        console.log('AuthContext: Mock data initialized')
+        // In production, ensure Supabase env vars are set and sessions are restored if using auth
 
         // Check for user session
         const storedUser = localStorage.getItem('user')
@@ -156,9 +153,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Find user by email or roll number
       let userResult
       if (emailOrRoll.includes('@')) {
-        userResult = await MockDataService.getUserByEmail(emailOrRoll)
+        userResult = await DatabaseService.getUserByEmail(emailOrRoll)
       } else {
-        userResult = await MockDataService.getUserByRollNumber(emailOrRoll.toUpperCase())
+        userResult = await DatabaseService.getUserByRollNumber(emailOrRoll.toUpperCase())
       }
 
       if (!userResult.data) {
@@ -167,11 +164,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       const userData = userResult.data
 
-      // In a real app, you would verify the password here
-      // For demo purposes, we'll accept any password for existing users
+      // TODO: verify password with real auth if implemented
 
       // Update last login
-      await MockDataService.updateUser(userData.id, {
+      await DatabaseService.updateUser(userData.id, {
         last_login: new Date().toISOString()
       })
 
@@ -214,24 +210,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(true)
     try {
       // Check if user already exists
-      const existingUserByEmail = await MockDataService.getUserByEmail(userData.email)
+      const existingUserByEmail = await DatabaseService.getUserByEmail(userData.email)
       if (existingUserByEmail.data) {
         return { success: false, error: 'An account with this email already exists' }
       }
 
-      const existingUserByRoll = await MockDataService.getUserByRollNumber(userData.roll_number)
+      const existingUserByRoll = await DatabaseService.getUserByRollNumber(userData.roll_number)
       if (existingUserByRoll.data) {
         return { success: false, error: 'An account with this roll number already exists' }
       }
 
       // Create new user
-      const userResult = await MockDataService.createUser(userData)
+      const userResult = await DatabaseService.createUser(userData)
       if (userResult.error) {
         return { success: false, error: 'Failed to create account. Please try again.' }
       }
 
       // Create registration record
-      await MockDataService.createRegistration({
+      await DatabaseService.createRegistration({
         user_id: userResult.data!.id,
         registration_date: new Date().toISOString(),
         status: 'active',
@@ -257,9 +253,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     console.log('AuthContext: StudentLogin called with:', emailOrRoll)
     setIsLoading(true)
     try {
-      // Initialize mock data if not already done
-      MockDataService.initializeMockData()
-      console.log('AuthContext: Mock data initialized for login')
+      // Using database for student login
 
       // Validate email domain if email is provided
       if (emailOrRoll.includes('@') && !emailOrRoll.endsWith('@raghuenggcollege.in')) {
@@ -271,10 +265,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       let studentResult
       if (emailOrRoll.includes('@')) {
         console.log('Searching by email:', emailOrRoll)
-        studentResult = await MockDataService.getStudentByEmail(emailOrRoll)
+        studentResult = await DatabaseService.getStudentByEmail(emailOrRoll)
       } else {
         console.log('Searching by roll number:', emailOrRoll.toUpperCase())
-        studentResult = await MockDataService.getStudentByRollNumber(emailOrRoll.toUpperCase())
+        studentResult = await DatabaseService.getStudentByRollNumber(emailOrRoll.toUpperCase())
       }
 
       console.log('Student search result:', studentResult)
@@ -285,16 +279,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('Student not found, checking user records...')
         let userResult
         if (emailOrRoll.includes('@')) {
-          userResult = await MockDataService.getUserByEmail(emailOrRoll)
+          userResult = await DatabaseService.getUserByEmail(emailOrRoll)
         } else {
-          userResult = await MockDataService.getUserByRollNumber(emailOrRoll.toUpperCase())
+          userResult = await DatabaseService.getUserByRollNumber(emailOrRoll.toUpperCase())
         }
 
         if (userResult.data) {
           console.log('Found user record, creating student record...')
           const userData = userResult.data
           // Create student record from user data
-          const newStudentResult = await MockDataService.createStudent({
+          const newStudentResult = await DatabaseService.createStudent({
             name: userData.full_name,
             roll_number: userData.roll_number,
             email: userData.email,
@@ -347,30 +341,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const studentRegister = async (studentData: Omit<Student, 'id' | 'created_at' | 'updated_at'>): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true)
     try {
-      // Check if student already exists (using mock data for development)
-      const existingByEmail = await MockDataService.getStudentByEmail(studentData.email)
+      // Check if student already exists
+      const existingByEmail = await DatabaseService.getStudentByEmail(studentData.email)
       if (existingByEmail.data) {
         return { success: false, error: 'An account with this email already exists' }
       }
 
-      const existingByRoll = await MockDataService.getStudentByRollNumber(studentData.roll_number)
+      const existingByRoll = await DatabaseService.getStudentByRollNumber(studentData.roll_number)
       if (existingByRoll.data) {
         return { success: false, error: 'An account with this roll number already exists' }
       }
 
-      // For development, we'll simulate creating a student
-      // In production, use DatabaseService.createStudent(studentData)
-      const result = {
-        data: {
-          id: `student_${Date.now()}`,
-          ...studentData,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        error: null
-      }
-      if (result.error) {
-        throw new Error(result.error.message || 'Failed to create student account')
+      // Create a student in DB
+      const result = await DatabaseService.createStudent(studentData)
+      if (result.error || !result.data) {
+        throw new Error(result.error?.message || 'Failed to create student account')
       }
 
       const newStudent = result.data
@@ -449,7 +434,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const adminLogin = async (username: string, password: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true)
     try {
-      const result = await MockDataService.authenticateAdmin(username, password)
+      const result = await DatabaseService.authenticateAdmin(username, password)
       if (result.data) {
         setAdmin(result.data)
         localStorage.setItem('admin', JSON.stringify(result.data))
