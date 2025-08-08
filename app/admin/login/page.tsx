@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useStudentAuth } from '@/contexts/AuthContext'
+import { useAdminAuth } from '@/contexts/AuthContext'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,7 +13,8 @@ import { Loader2, Shield } from 'lucide-react'
 
 export default function AdminLoginPage() {
   const router = useRouter()
-  const { adminLogin } = useStudentAuth()
+  // Use admin-specific auth hook (was incorrectly using useStudentAuth which doesn't expose adminLogin)
+  const { adminLogin } = useAdminAuth()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [credentials, setCredentials] = useState({
