@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS public.students (
 
 CREATE INDEX IF NOT EXISTS idx_students_team ON public.students(team_id);
 
+-- Ensure idempotent trigger creation (avoid 42710 duplicate trigger errors on re-run)
+DROP TRIGGER IF EXISTS set_timestamp_students ON public.students;
 CREATE TRIGGER set_timestamp_students
 BEFORE UPDATE ON public.students
 FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
@@ -36,6 +38,7 @@ CREATE TABLE IF NOT EXISTS public.teams (
 
 CREATE INDEX IF NOT EXISTS idx_teams_leader ON public.teams(leader_id);
 
+DROP TRIGGER IF EXISTS set_timestamp_teams ON public.teams;
 CREATE TRIGGER set_timestamp_teams
 BEFORE UPDATE ON public.teams
 FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
@@ -66,12 +69,22 @@ CREATE TABLE IF NOT EXISTS public.ideas (
 
 CREATE INDEX IF NOT EXISTS idx_ideas_team ON public.ideas(team_id);
 
+DROP TRIGGER IF EXISTS set_timestamp_ideas ON public.ideas;
 CREATE TRIGGER set_timestamp_ideas
 BEFORE UPDATE ON public.ideas
 FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
--- Add FK for students.team_id now that teams table exists
-ALTER TABLE public.students
-  ADD CONSTRAINT students_team_fk FOREIGN KEY (team_id) REFERENCES public.teams(id) ON DELETE SET NULL;
+-- Add FK for students.team_id now that teams table exists (idempotent)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'students_team_fk'
+      AND conrelid = 'public.students'::regclass
+  ) THEN
+    ALTER TABLE public.students
+      ADD CONSTRAINT students_team_fk FOREIGN KEY (team_id) REFERENCES public.teams(id) ON DELETE SET NULL;
+  END IF;
+END$$;
 
 -- Now that teams exists, update students.team_id FK is valid (already declared as forward reference)
 
