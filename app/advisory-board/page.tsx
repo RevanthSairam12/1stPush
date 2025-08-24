@@ -36,12 +36,6 @@ export default function AdvisoryBoard() {
       role: "Faculty Coordinator",
       subtitle: "Mentoring students in entrepreneurship and innovation",
       image: "/kiranspecial.png"
-    },
-    {
-      name: "Dr. Ramesh Babu",
-      role: "ESIC Coordinator",
-      subtitle: "Leading startup initiatives and entrepreneurial programs",
-      image: "/ramesh-sir.jpg"
     }
   ];
 

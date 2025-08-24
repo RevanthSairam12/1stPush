@@ -25,12 +25,12 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto">
           {/* Main Heading */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 leading-tight tracking-tight">
-            E-Cell REC
+            Enterpenuership Cell
           </h1>
 
           {/* Subheading */}
           <p className="text-lg md:text-xl text-white/95 leading-relaxed font-light">
-            Empowering the next generation of entrepreneurs
+            We belong, so we can become even more
           </p>
         </div>
       </div>
