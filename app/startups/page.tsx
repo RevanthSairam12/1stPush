@@ -39,21 +39,21 @@ export default function Startups() {
   const startupStories = [
     {
       name: "AVATAQ.AI",
-      founder: "Rahul Sharma",
+      founder: "Vishal & Santosh",
       description: "AI-powered Agentic AI",
-      status: "Incubated",
+      status: "MVP Ready",
       badge: "NSIC Shortlisted",
-      funding: "₹15L Raised",
+      funding: "Looking for VCS",
       logo: "AQ",
       achievements: ["50+ Installations", "3 City Partnerships", "IoT Innovation Award"]
     },
     {
       name: "PromptCraft",
-      founder: "Priya Patel",
+      founder: "Vishal & Santosh",
       description: "Prompt tool for students for perfect JSON prompts",
       status: "Prototype Ready",
       badge: "Prototype Ready",
-      funding: "₹5L Seeking",
+      funding: "Looking for VCS",
       logo: "PC",
       achievements: ["1000+ Students", "5 Schools", "Education Excellence Award"]
     },
@@ -62,8 +62,8 @@ export default function Startups() {
       founder: "Ganesh Tappiti",
       description: "Easy platform to generate MVP's",
       status: "Early Stage",
-      badge: "Incubated",
-      funding: "₹8L Raised",
+      badge: "MVP Ready",
+      funding: "Looking for VCS",
       logo: "BT",
       achievements: ["Zero Waste Goal", "B2B Partnerships", "Sustainability Award"]
     }

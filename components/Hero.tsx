@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -32,10 +33,23 @@ const Hero = () => {
           <p className="text-lg md:text-xl text-white/95 leading-relaxed font-light">
             We belong, so we can become even more
           </p>
+
+          {/* CTA Buttons moved from header */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link href="/registration">
+              <Button variant="outline" className="text-sm px-6 py-2">
+                Login
+              </Button>
+            </Link>
+
+            <Link href="/join-ecell">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-sm px-6 py-2">
+                Apply Today
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
-
-
     </section>
   );
 };

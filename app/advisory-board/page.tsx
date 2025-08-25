@@ -26,10 +26,10 @@ export default function AdvisoryBoard() {
       image: "/Rahul-Kalidindi-1.jpg"
     },
     {
-      name: "Dr. Ch. Srinivasu",
+      name: "Dr. A.Vijay kumar",
       role: "Principal",
       subtitle: "Providing academic leadership and fostering learning environment",
-      image: "/principal.jpg"
+      image: "/new-prince.jpeg"
     },
     {
       name: "Dr. G. Kiran Kumar",
