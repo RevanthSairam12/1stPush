@@ -287,8 +287,8 @@ export default function DashboardPage() {
     try {
       // Create student record for the leader
       const studentResult = await MockDataService.createStudent({
-        name: user.full_name,
-        roll_number: user.roll_number,
+        name: user.name,
+        roll_number: user.rollNumber,
         email: user.email,
         role: 'leader',
         team_id: undefined // Will be set after team creation
