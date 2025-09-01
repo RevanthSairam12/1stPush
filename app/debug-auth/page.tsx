@@ -1,12 +1,24 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useStudentAuth } from '@/contexts/AuthContext'
 import { MockDataService } from '@/lib/mockData'
 
 export default function DebugAuth() {
   const { student, isStudentAuthenticated, studentLogin, isLoading } = useStudentAuth()
   const [testEmail, setTestEmail] = useState('arjun.sharma@raghuenggcollege.in')
+  const [localStorageData, setLocalStorageData] = useState<{[key: string]: string | null}>({})
+
+  useEffect(() => {
+    // Only access localStorage on the client side
+    if (typeof window !== 'undefined') {
+      setLocalStorageData({
+        student: localStorage.getItem('student'),
+        user: localStorage.getItem('user'),
+        admin: localStorage.getItem('admin')
+      })
+    }
+  }, [])
 
   const handleTestLogin = async () => {
     console.log('Testing login with:', testEmail)
@@ -22,8 +34,10 @@ export default function DebugAuth() {
   }
 
   const handleClearStorage = () => {
-    localStorage.clear()
-    window.location.reload()
+    if (typeof window !== 'undefined') {
+      localStorage.clear()
+      window.location.reload()
+    }
   }
 
   return (
