@@ -689,7 +689,7 @@ export function RoleBasedContent({
       setIsSearching(true)
       try {
         // Use fuzzy search for partial matches on name, email, or roll number
-        const searchRes = await DatabaseService.searchStudents(searchTerm, 10)
+        const searchRes = await (DatabaseService as any).searchStudents(searchTerm, 10)
         if (searchRes.error) {
           throw searchRes.error
         }
